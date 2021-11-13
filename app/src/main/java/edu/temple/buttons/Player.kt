@@ -1,5 +1,8 @@
 package edu.temple.buttons
 
+import android.widget.TextView
+import java.lang.StringBuilder
+
 fun getMoveList() : ArrayList<String> {
     val moves = ArrayList<String>()
     moves.add("Attack") //attack
@@ -10,8 +13,27 @@ fun getMoveList() : ArrayList<String> {
     return moves
 }
 
-class Player(_health: Int) {
+class Player(_health: Int, _healthBar: TextView) {
     var health = _health
+    var maxHealth = _health
+    private val healthBar = _healthBar
+
+    fun getHealthBar() {
+        health = maxHealth
+        val sb = StringBuilder()
+        for(i in 1..maxHealth) {
+            sb.append("■")
+        }
+        healthBar.text = sb
+    }
+
+    private fun getHealthBar(healthBar: TextView){
+        val sb = StringBuilder()
+        for(i in 1..health) {
+            sb.append("■")
+        }
+        healthBar.text = sb
+    }
 
     fun getMove() : String {
         val moves = getMoveList()
@@ -21,14 +43,19 @@ class Player(_health: Int) {
     fun doMove(opponent: Player, opponentMove: String, userMove: String): Int {
         when(userMove) {
             "Attack" -> {
-                if(opponentMove != "Block" && opponentMove != "Counter")
+                if(opponentMove != "Block" && opponentMove != "Counter") {
                     opponent.health--
+                    opponent.getHealthBar(opponent.healthBar)
+                }
             }
             "Counter" -> {
-                if(opponentMove == "Attack")
+                if(opponentMove == "Attack") {
                     opponent.health -= 2
-                else
+                    opponent.getHealthBar(opponent.healthBar)
+                } else {
                     health--
+                    getHealthBar(healthBar)
+                }
             }
         }
 
